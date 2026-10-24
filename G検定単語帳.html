@@ -9,7 +9,10 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f141a;--card:#1a2129;--ink:#e8edf2;--sub:#9aa7b5;--line:#2b3542;--acc:#60a5fa;--ok:#4ade80;--ng:#f87171;--chip:#243040;--hl:#3b3a1f}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.7}
-header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;z-index:5}
+html,body{overflow-x:hidden;max-width:100%}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select{max-width:100%;min-width:0}
+#chapter{flex:1 1 100%}
 header h1{font-size:17px;margin:0 12px 0 0}
 select,button,input{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 10px}
 button{cursor:pointer}
@@ -46,7 +49,8 @@ kbd{border:1px solid var(--line);border-radius:4px;padding:0 5px;background:var(
 .empty{text-align:center;color:var(--sub);padding:60px 0}
 a{color:var(--acc)}
 .danger{color:var(--ng);border-color:var(--ng)}
-@media (max-width:600px){.card .term{font-size:24px;margin-top:24px}header h1{width:100%}}
+@media (max-width:600px){.card .term{font-size:24px;margin-top:24px}header h1{width:100%}header select,header input,header button{font-size:14px;padding:6px 8px}#q{flex:1 1 100%}}
+textarea{width:100%;min-height:80px;font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:8px}
 </style>
 </head>
 <body>
@@ -91,12 +95,15 @@ function grade(id,ok){const r=rec(id);const box=ok?Math.min(4,(r.box||1)+1):1;co
  state[id]={box,due:Date.now()+days*864e5,seen:(r.seen||0)+1,last:Date.now()};save();}
 
 let tab='card',order=[],idx=0,flipped=false;
+const UIKEY='gkentei-flash-ui-v1';
+function saveUI(){try{localStorage.setItem(UIKEY,JSON.stringify({chapter:chapSel.value,filter:filterSel.value,dir:dirSel.value,q:q.value,order,idx,tab}))}catch(e){}}
+function loadUI(){try{return JSON.parse(localStorage.getItem(UIKEY))}catch(e){return null}}
 const $=s=>document.querySelector(s);
 const chapSel=$('#chapter'),filterSel=$('#filter'),dirSel=$('#dir'),q=$('#q');
 chapSel.innerHTML='<option value="0">全章（'+DATA.length+'語）</option>'+CHAPTERS.map((c,i)=>`<option value="${i+1}">第${i+1}章 ${c}</option>`).join('');
 ['change','input'].forEach(ev=>[chapSel,filterSel,dirSel,q].forEach(el=>el.addEventListener(ev,()=>{rebuild();render()})));
 $('#shuffle').onclick=()=>{order.sort(()=>Math.random()-.5);idx=0;flipped=false;render()};
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));render()});
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;saveUI();document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));render()});
 
 function pool(){
  const ch=+chapSel.value,f=filterSel.value,s=q.value.trim().toLowerCase(),now=Date.now();
@@ -111,6 +118,7 @@ function pool(){
   return true});
 }
 function rebuild(){order=pool().map(t=>t.id);idx=0;flipped=false}
+function restore(){const u=loadUI();if(!u)return false;chapSel.value=u.chapter||0;filterSel.value=u.filter||'all';dirSel.value=u.dir||'t2d';q.value=u.q||'';const ids=new Set(DATA.map(t=>t.id));order=(u.order||[]).filter(id=>ids.has(id));if(!order.length)return false;idx=Math.min(u.idx||0,order.length-1);if(u.tab){tab=u.tab;document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x.dataset.tab===tab))}return true}
 function gloss(s){return esc(s).replace(/（([^（）]{4,}?)）/g,'<span class="g">（$1）</span>')}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function yt(pos){const [h,m,s]=pos.split(':').map(Number);return `https://youtu.be/iNMZtrpTXpM?t=${h*3600+m*60+s}`}
@@ -120,7 +128,8 @@ const BOXNAME=['未学習','苦手','覚えかけ','もう少し','定着'];
 function render(){
  const all=DATA.length,known=DATA.filter(t=>rec(t.id).box>=2).length,weak=DATA.filter(t=>rec(t.id).box===1).length,
   due=DATA.filter(t=>{const r=rec(t.id);return r.box>0&&r.box<4&&r.due<=Date.now()}).length;
- $('#stats').innerHTML=`<span>覚えた: <b>${known}</b>/${all}</span><span>苦手: <b>${weak}</b></span><span>今日の復習: <b>${due}</b></span><span>表示中: <b>${order.length}</b>語</span>`;
+ $('#stats').innerHTML=`<span>覚えた: <b>${known}</b>/${all}</span><span>苦手: <b>${weak}</b></span><span>今日の復習: <b>${due}</b></span><span>表示中: <b>${new Set(order).size}</b>語</span>`;
+ saveUI();
  $('#prog').style.width=(known/all*100)+'%';
  const v=$('#view');
  if(tab==='stats')return renderStats(v);
@@ -166,8 +175,19 @@ function renderStats(v){
  v.innerHTML=`<div class="list"><div class="item" style="overflow:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
   <tr style="color:var(--sub)"><th style="text-align:left">章</th><th>語数</th>${BOXNAME.map(b=>`<th>${b}</th>`).join('')}<th>習得率</th></tr>${rows}</table></div>
   <div class="item"><p>「覚えた」を押すと段階が上がり、1日→3日→7日後に復習対象になります。「まだ」を押すと「苦手」に戻り、そのセッション中にもう一度出てきます。学習記録はこのブラウザ内（localStorage）に保存されます。</p>
-  <button id="export">学習記録を書き出す(JSON)</button> <button class="danger" id="reset">学習記録をリセット</button></div></div>`;
- $('#export').onclick=()=>{const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(JSON.stringify(state));a.download='gkentei-progress.json';a.click()};
+  <p style="font-size:14px"><b>記録のバックアップ・引き継ぎ</b><br>「記録をコピー」で学習記録を文字列としてコピーできます。別の端末やブラウザでこのページを開き、下の欄に貼り付けて「読み込む」と、記録を引き継げます。</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="primary" id="copy">記録をコピー</button><button id="export">ファイルに保存</button><label style="display:inline-block"><input type="file" id="file" accept=".json,application/json" style="display:none"><span style="display:inline-block;padding:6px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer">ファイルから読み込む</span></label></div>
+  <textarea id="paste" placeholder="ここにコピーした記録を貼り付け…"></textarea>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="import">貼り付けた記録を読み込む</button><span id="msg" style="font-size:13px;color:var(--sub);align-self:center"></span></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+  <button class="danger" id="reset">学習記録をリセット</button></div></div>`;
+ const msg=t=>{$('#msg').textContent=t};
+ const payload=()=>JSON.stringify({v:1,flash:state});
+ $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText(payload());msg('コピーしました。別端末のこの欄に貼り付けてください')}catch(e){$('#paste').value=payload();$('#paste').select();msg('自動コピーできなかったので欄に表示しました。全選択してコピーしてください')}};
+ const importText=txt=>{try{const o=JSON.parse(txt);const d=o.flash||o;if(typeof d!=='object')throw 0;let n=0;for(const k in d){if(d[k]&&typeof d[k].box==='number'){const cur=state[k];if(!cur||(d[k].last||0)>=(cur.last||0))state[k]=d[k];n++}}save();render();msg(`${n}件の記録を読み込みました`)}catch(e){msg('読み込めませんでした。コピーした文字列をそのまま貼り付けてください')}};
+ $('#import').onclick=()=>importText($('#paste').value.trim());
+ $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>importText(r.result);r.readAsText(f)};
+ $('#export').onclick=()=>{const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(payload());a.download='gkentei-progress.json';a.click()};
  $('#reset').onclick=()=>{if(confirm('学習記録をすべて消します。よろしいですか？')){state={};save();render()}};
 }
 document.addEventListener('keydown',e=>{if(tab!=='card'||e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
@@ -175,7 +195,7 @@ document.addEventListener('keydown',e=>{if(tab!=='card'||e.target.tagName==='INP
  else if(e.key==='1'&&flipped)answer(false);else if(e.key==='2'&&flipped)answer(true);
  else if(e.key==='ArrowLeft'&&idx>0){idx--;flipped=false;render()}
  else if(e.key==='ArrowRight'&&idx<order.length-1){idx++;flipped=false;render()}});
-rebuild();render();
+if(!restore())rebuild();render();
 </script>
 </body>
 </html>

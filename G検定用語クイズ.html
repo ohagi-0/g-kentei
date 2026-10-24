@@ -8,6 +8,10 @@
 :root{--bg:#f4f6fa;--card:#fff;--ink:#1b2430;--sub:#5b6878;--line:#dde3ea;--acc:#7c3aed;--ok:#16a34a;--ng:#dc2626;--chip:#eef2f7;--okbg:#dcfce7;--ngbg:#fee2e2}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f141a;--card:#1a2129;--ink:#e8edf2;--sub:#9aa7b5;--line:#2b3542;--acc:#a78bfa;--ok:#4ade80;--ng:#f87171;--chip:#243040;--okbg:#14321f;--ngbg:#3b1a1a}}
 *{box-sizing:border-box}
+html,body{overflow-x:hidden;max-width:100%}
+select{max-width:100%}
+.row label{max-width:100%}
+textarea{width:100%;min-height:70px;font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:8px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.7}
 header{background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 header h1{font-size:17px;margin:0 12px 0 0}
@@ -88,12 +92,20 @@ function renderSetup(){
     <option value="weak" ${weak?'':'disabled'}>苦手な用語だけ（${weak}語）</option>
     <option value="unseen" ${unseen?'':'disabled'}>まだ出題されていない用語だけ（${unseen}語）</option></select></label></div>
   <div class="row" style="justify-content:center;margin-top:20px"><button class="primary" id="start">スタート</button></div>
-  ${last.length?`<details><summary>最近の結果</summary><table>${last.map(s=>`<tr><td>${new Date(s.date).toLocaleString('ja-JP')}</td><td>${s.label}</td><td>${s.score} / ${s.n}（${Math.round(s.score/s.n*100)}%）</td></tr>`).join('')}</table>
-   <div class="row"><button id="reset" style="color:var(--ng)">記録をリセット</button></div></details>`:''}
+  ${last.length?`<details><summary>最近の結果</summary><table>${last.map(s=>`<tr><td>${new Date(s.date).toLocaleString('ja-JP')}</td><td>${s.label}</td><td>${s.score} / ${s.n}（${Math.round(s.score/s.n*100)}%）</td></tr>`).join('')}</table></details>`:''}
+  <details style="margin-top:10px"><summary>記録のバックアップ・引き継ぎ／リセット</summary>
+   <p style="font-size:13px;color:var(--sub)">「記録をコピー」した文字列を、別の端末のこの欄に貼り付けて「読み込む」と記録を引き継げます。</p>
+   <div class="row"><button id="copy">記録をコピー</button></div>
+   <textarea id="paste" placeholder="ここに貼り付け…"></textarea>
+   <div class="row"><button id="import">貼り付けた記録を読み込む</button><span id="msg" style="font-size:13px;color:var(--sub)"></span></div>
+   <div class="row" style="margin-top:14px"><button id="reset" style="color:var(--ng)">記録をリセット</button></div></details>
  </div>`;
+ const msg=t=>{$('#msg').textContent=t};const payload=()=>JSON.stringify({v:1,quiz:H});
+ $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText(payload());msg('コピーしました')}catch(e){$('#paste').value=payload();$('#paste').select();msg('欄に表示しました。全選択してコピーしてください')}};
+ $('#import').onclick=()=>{try{const o=JSON.parse($('#paste').value.trim());const d=o.quiz||o;if(!d.terms)throw 0;for(const k in d.terms){const a=H.terms[k],b=d.terms[k];H.terms[k]=a?{ok:a.ok+b.ok,ng:a.ng+b.ng,last:Math.max(a.last||0,b.last||0)}:b}H.sessions=(H.sessions.concat(d.sessions||[])).sort((x,y)=>x.date-y.date).slice(-50);save();renderSetup();}catch(e){msg('読み込めませんでした')}};
  ['chapter','mode','n','pool'].forEach(k=>{$('#'+k).value=cfg[k];$('#'+k).onchange=e=>cfg[k]=e.target.value});
  $('#start').onclick=start;
- const r=$('#reset');if(r)r.onclick=()=>{if(confirm('クイズの記録をすべて消します。よろしいですか？')){H={terms:{},sessions:[]};save();renderSetup()}};
+ const r=$('#reset');r.onclick=()=>{if(confirm('クイズの記録をすべて消します。よろしいですか？')){H={terms:{},sessions:[]};save();renderSetup()}};
 }
 
 function start(){
