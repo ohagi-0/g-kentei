@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>G検定 合格ノート</title>
+<meta name="description" content="G検定（JDLA Deep Learning for GENERAL）のテキストと問題集。章別の得点率を記録して苦手分野を復習する個人学習サイト。">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: textbook-publisher study site. Navy masthead band with text nav, white content panel on a light grey ground,
+   main column + right sidebar (stacks under 760px), three-column footer. Serif for the site name and chapter titles only. */
+:root{
+  --ground:#f1f1ee; --bg:#fff; --fg:#242424; --fg-2:#6a6a6a; --line:#cfcfcb; --line-2:#e6e6e2; --th:#f4f4f1; --well:#f8f8f5;
+  --navy:#1e3550; --navy-2:#2b4a6e; --navy-fg:#fff; --gold:#b58a2c; --gold-bg:#fbf5e6;
+  --link:#1d4e89; --visited:#5a3e8a;
+  --ok:#1f7a3d; --ok-bg:#e9f5ec; --unsure:#9a6400; --unsure-bg:#fff5da; --ng:#b0202c; --ng-bg:#fbe9ea;
+  --btn:#fafaf8; --btn-b:#9a9a96; --focus:#1d4e89;
+  --serif:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:"Noto Sans JP","Hiragino Sans","Yu Gothic Medium",Meiryo,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ground:#131517; --bg:#1c1f23; --fg:#dcdcdc; --fg-2:#9a9a9a; --line:#4a4e54; --line-2:#2e3237; --th:#262a2f; --well:#22262b;
+  --navy:#0f1b2a; --navy-2:#1b2d44; --navy-fg:#e8edf3; --gold:#d2a64a; --gold-bg:#2b2612;
+  --link:#8ab4f8; --visited:#c58af9;
+  --ok:#6ccf8a; --ok-bg:#1d3324; --unsure:#e6b84a; --unsure-bg:#3b3214; --ng:#f08a90; --ng-bg:#3c2224;
+  --btn:#2a2e33; --btn-b:#777; --focus:#8ab4f8; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --ground:#131517; --bg:#1c1f23; --fg:#dcdcdc; --fg-2:#9a9a9a; --line:#4a4e54; --line-2:#2e3237; --th:#262a2f; --well:#22262b;
+  --navy:#0f1b2a; --navy-2:#1b2d44; --navy-fg:#e8edf3; --gold:#d2a64a; --gold-bg:#2b2612;
+  --link:#8ab4f8; --visited:#c58af9;
+  --ok:#6ccf8a; --ok-bg:#1d3324; --unsure:#e6b84a; --unsure-bg:#3b3214; --ng:#f08a90; --ng-bg:#3c2224;
+  --btn:#2a2e33; --btn-b:#777; --focus:#8ab4f8; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--fg);font:15px/1.85 var(--sans);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+a{color:var(--link);text-decoration:underline;text-underline-offset:2px}
+a:visited{color:var(--visited)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+h1,h2,h3,h4{margin:0;line-height:1.4;font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;line-height:1.6}
+th{background:var(--th);font-weight:700;white-space:nowrap;border-bottom:2px solid var(--navy-2)}
+tbody tr:nth-child(even) td,table tr:nth-child(even):not(:first-child) td{background:var(--well)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl{overflow-x:auto}
+button,.btn{font:inherit;color:var(--fg);background:var(--btn);border:1px solid var(--btn-b);border-radius:3px;padding:8px 18px;cursor:pointer;line-height:1.5;text-decoration:none;display:inline-block;box-shadow:inset 0 -2px 0 rgba(0,0,0,.06)}
+button:hover,.btn:hover{filter:brightness(.97)}
+button:active,.btn:active{box-shadow:none;transform:translateY(1px)}
+button[disabled]{opacity:.45;cursor:default}
+button.primary{background:var(--navy-2);border-color:var(--navy);color:#fff;font-weight:700;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+button.link{background:none;border:0;padding:0;color:var(--link);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font:inherit;box-shadow:none}
+.muted{color:var(--fg-2)}
+.small{font-size:13px}
+.red{color:var(--ng)}
+
+/* masthead */
+.band{background:var(--navy);color:var(--navy-fg)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.masthead{padding-block:18px 0}
+.masthead .title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:40px;height:40px;border:2px solid var(--gold);display:grid;place-items:center;font:700 20px/1 var(--serif);color:var(--gold);flex:none}
+.brand h1{font:700 24px/1.2 var(--serif);letter-spacing:.04em}
+.brand h1 a{color:inherit;text-decoration:none}
+.brand .sub{display:block;font:400 11.5px/1.4 var(--sans);letter-spacing:.08em;opacity:.8;margin-top:3px}
+.masthead .exam{font-size:12.5px;text-align:right;opacity:.9;line-height:1.6}
+.masthead .exam b{font-size:18px;font-variant-numeric:tabular-nums;color:var(--gold)}
+nav.global{background:var(--navy-2);border-top:1px solid rgba(255,255,255,.12)}
+nav.global ul{list-style:none;margin:0;padding:0;display:flex;overflow-x:auto;scrollbar-width:none}
+nav.global ul::-webkit-scrollbar{display:none}
+nav.global li a{display:block;padding:10px 18px;color:var(--navy-fg);text-decoration:none;white-space:nowrap;font-size:14.5px;border-bottom:3px solid transparent}
+nav.global li:first-child a{padding-left:0}
+nav.global li a[aria-current="page"]{border-bottom-color:var(--gold);font-weight:700}
+nav.global li a:hover{background:rgba(255,255,255,.06)}
+
+/* page */
+.page{max-width:1040px;margin:20px auto 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.crumbs{font-size:12.5px;color:var(--fg-2);margin:0 0 10px;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:4px}
+.crumbs li+li::before{content:"›";margin-right:4px}
+.panel{background:var(--bg);border:1px solid var(--line);padding:4px 28px 32px;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:0 36px}
+@media (max-width:760px){.panel{grid-template-columns:minmax(0,1fr);padding:4px 16px 24px}}
+main{min-width:0}
+aside{min-width:0;font-size:14px;padding-top:24px}
+@media (min-width:761px){aside{border-left:1px solid var(--line-2);padding-left:28px}}
+aside h3{font-size:13.5px;letter-spacing:.06em;color:var(--navy-2);padding:0 0 6px;border-bottom:2px solid var(--navy-2);margin:0 0 6px}
+aside h3+*{margin-top:0}
+aside section{margin-bottom:26px}
+aside ul{list-style:none;margin:0;padding:0}
+aside li{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:6px 0;border-bottom:1px dotted var(--line)}
+aside li a{text-decoration:none;color:var(--fg)}
+aside li a:hover{text-decoration:underline;color:var(--link)}
+aside li .p{font-variant-numeric:tabular-nums;color:var(--fg-2);font-size:13px}
+aside li .p.red{color:var(--ng);font-weight:700}
+aside li .bar{grid-column:1/3;height:4px;background:var(--line-2)}
+aside li .bar i{display:block;height:100%;background:var(--navy-2)}
+aside li .bar.red i{background:var(--ng)}
+aside .exambox{border:1px solid var(--gold);background:var(--gold-bg);padding:12px 14px;font-size:13px}
+aside .exambox dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0}
+aside .exambox dt{color:var(--fg-2)}aside .exambox dd{margin:0}
+aside .notice{font-size:12.5px;color:var(--fg-2);border-top:1px solid var(--line-2);padding-top:10px}
+
+main h2{font:700 21px/1.4 var(--serif);margin:28px 0 14px;padding:0 0 8px;border-bottom:1px solid var(--line);position:relative;letter-spacing:.02em}
+main h2::after{content:"";position:absolute;left:0;bottom:-1px;width:64px;height:3px;background:var(--navy-2)}
+main h2 .ch{display:inline-block;font:700 12px/1 var(--sans);color:#fff;background:var(--navy-2);padding:5px 8px;margin-right:10px;vertical-align:3px;letter-spacing:.06em}
+main h3{font-size:16px;margin:24px 0 10px;padding-left:10px;border-left:4px solid var(--gold)}
+main p{margin:0 0 12px}
+main ul,main ol{margin:0 0 12px;padding-left:1.6em}
+main li{margin-bottom:5px}
+.lead{font-size:15.5px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.well{background:var(--well);border:1px solid var(--line-2);border-left:4px solid var(--gold);padding:12px 16px;margin:14px 0}
+.updates{font-size:14px;border-top:1px solid var(--line);margin:0}
+.updates li{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:7px 0;border-bottom:1px dotted var(--line);margin:0;list-style:none}
+.updates time{color:var(--fg-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0 0 12px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:8px 0;border-bottom:1px dotted var(--line)}
+.steps li::before{content:counter(s);width:30px;height:30px;border:1px solid var(--navy-2);color:var(--navy-2);display:grid;place-items:center;font:700 14px var(--serif)}
+.prose{max-width:44em}
+.prose h3{border-left-color:var(--navy-2)}
+.prose mark{background:linear-gradient(transparent 60%,var(--gold-bg) 60%);color:inherit;font-weight:700;border-bottom:2px solid var(--gold)}
+.prose table{min-width:560px}
+.toc{columns:2;column-gap:28px;font-size:14px;margin:0 0 16px;padding:0;list-style:none}
+@media (max-width:560px){.toc{columns:1}}
+.toc li{break-inside:avoid;padding:4px 0;border-bottom:1px dotted var(--line)}
+
+/* question form */
+.qmeta{font-size:13px;color:var(--fg-2);display:flex;gap:14px;flex-wrap:wrap;margin:0 0 10px}
+.qmeta span{border:1px solid var(--line);padding:0 8px;border-radius:2px}
+.qtext{font-size:16.5px;font-weight:700;margin:0 0 16px;line-height:1.85;padding:14px 18px;background:var(--well);border:1px solid var(--line-2);border-left:4px solid var(--navy-2)}
+.choices{list-style:none;margin:0 0 16px;padding:0;border-top:1px solid var(--line)}
+.choices li{border-bottom:1px solid var(--line)}
+.choices label{display:flex;gap:12px;align-items:flex-start;padding:11px 8px;cursor:pointer;line-height:1.7}
+.choices label:hover{background:var(--well)}
+.choices input{margin:8px 0 0;flex:none;accent-color:var(--navy-2)}
+.choices .k{flex:none;width:26px;height:26px;border:1px solid var(--navy-2);color:var(--navy-2);display:grid;place-items:center;font:700 13px var(--serif);margin-top:2px}
+.choices li.ok label{background:var(--ok-bg)}
+.choices li.ng label{background:var(--ng-bg)}
+.choices li.ok .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.choices li.ng .k{background:var(--ng);border-color:var(--ng);color:#fff}
+.choices .mark{flex:none;font-weight:700;width:1.4em;text-align:center;margin-top:1px}
+.choices li.ok .mark{color:var(--ok)}.choices li.ng .mark{color:var(--ng)}
+.choices .why{display:block;font-size:13.5px;color:var(--fg-2);margin-top:2px}
+.timer{font-variant-numeric:tabular-nums}
+.timer.over{color:var(--ng);font-weight:700}
+.verdict{font:700 20px/1.4 var(--serif);margin:18px 0 6px}
+.verdict.ok{color:var(--ok)}.verdict.ng{color:var(--ng)}
+.result-tbl td.ok{color:var(--ok);font-weight:700}
+.result-tbl td.un{color:var(--unsure);font-weight:700}
+.result-tbl td.ng{color:var(--ng);font-weight:700}
+.bigrate{display:flex;align-items:baseline;gap:14px;margin:8px 0 14px}
+.bigrate b{font:700 48px/1 var(--serif);font-variant-numeric:tabular-nums;color:var(--navy-2)}
+.bigrate b.red{color:var(--ng)}
+.stack{display:flex;height:10px;width:100%;min-width:120px;border:1px solid var(--line);background:var(--line-2)}
+.stack i{display:block;height:100%}
+
+/* glossary */
+.search{display:flex;gap:8px;margin:0 0 12px;max-width:440px}
+.search input{flex:1;min-width:0;font:inherit;padding:7px 10px;border:1px solid var(--btn-b);border-radius:3px;background:var(--bg);color:var(--fg)}
+.index{font-size:14px;margin:0 0 14px}
+.index a,.index b{margin-right:10px}
+dl.terms{margin:0;border-top:1px solid var(--line)}
+dl.terms dt{font-weight:700;padding:11px 0 0;font-size:15px}
+dl.terms dt .ch{font-weight:400;color:var(--fg-2);font-size:12.5px;margin-left:8px}
+dl.terms dd{margin:2px 0 0;padding:0 0 11px 1em;border-bottom:1px solid var(--line-2);font-size:14px;color:var(--fg)}
+.flash{border:1px solid var(--line);border-top:4px solid var(--navy-2);padding:32px 22px;text-align:center;min-height:200px;display:flex;flex-direction:column;justify-content:center;gap:12px;cursor:pointer;user-select:none;background:var(--well)}
+.flash .q{font:700 22px/1.4 var(--serif)}
+.flash .a{font-size:14.5px;text-align:left;line-height:1.85}
+
+/* footer */
+footer.site-foot{margin-top:28px;background:var(--navy);color:var(--navy-fg);font-size:13px}
+footer .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding-block:26px 20px}
+@media (max-width:640px){footer .cols{grid-template-columns:1fr}}
+footer h4{font-size:13px;letter-spacing:.06em;color:var(--gold);margin-bottom:8px}
+footer ul{list-style:none;margin:0;padding:0}
+footer li{padding:3px 0}
+footer a,footer button.link{color:var(--navy-fg);opacity:.9;font-size:13px}
+footer .copy{border-top:1px solid rgba(255,255,255,.15);padding-block:12px 16px;font-size:12px;opacity:.75;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:3px;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* production additions */
+.prose pre{background:var(--well);border:1px solid var(--line-2);padding:12px 14px;overflow-x:auto;font:13px/1.5 "SF Mono",Menlo,Consolas,monospace;margin:12px 0}
+.prose code{font:13px/1.5 "SF Mono",Menlo,Consolas,monospace;background:var(--well);padding:0 4px}
+.prose pre code{background:none;padding:0}
+.prose blockquote{margin:0 0 14px;padding:8px 14px;border-left:4px solid var(--gold);background:var(--gold-bg);color:var(--fg)}
+.prose blockquote p{margin:0}
+.prose table{min-width:0}
+.prose h2{scroll-margin-top:12px}
+.prose h3{scroll-margin-top:12px}
+.prose hr{border:0;border-top:1px dotted var(--line);margin:20px 0}
+.prose img{max-width:100%}
+.chapnav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px;margin-top:28px;font-size:14px}
+.loading{padding:40px 0;color:var(--fg-2)}
+.mockbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--well);border:1px solid var(--line-2);padding:8px 14px;margin:0 0 14px;font-size:14px}
+.mockbar .timer{font:700 20px/1 var(--serif);font-variant-numeric:tabular-nums}
+.mocknav{display:flex;flex-wrap:wrap;gap:4px;margin:14px 0}
+.mocknav button{width:38px;height:32px;padding:0;font-size:12px;font-variant-numeric:tabular-nums;box-shadow:none}
+.mocknav button.done{background:var(--navy-2);color:#fff;border-color:var(--navy-2)}
+.mocknav button.cur{outline:2px solid var(--gold);outline-offset:-2px}
+.mocknav button.ok{background:var(--ok-bg);border-color:var(--ok)}
+.mocknav button.ng{background:var(--ng-bg);border-color:var(--ng)}
+.qtext p{margin:0}
+.choices .x p{margin:0;display:inline}
+.why p{display:inline;margin:0}
+input[type=file]{font:inherit;font-size:13px}
+details.exp{margin:8px 0 14px}
+details.exp summary{cursor:pointer;color:var(--link);text-decoration:underline;font-size:14px}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap masthead">
+    <div class="title">
+      <div class="brand"><span class="mark">G</span><h1><a href="#home">G検定 合格ノート</a><span class="sub">JDLA Deep Learning for GENERAL　シラバス G2024#6 対応</span></h1></div>
+      <div class="exam">次回試験 2026年11月6日（金）〜7日（土）<br>あと <b id="days">—</b> 日</div>
+    </div>
+  </div>
+  <nav class="global" aria-label="サイト内"><div class="wrap"><ul id="nav"></ul></div></nav>
+</header>
+<div class="page">
+  <ol class="crumbs" id="crumbs"></ol>
+  <div class="panel">
+    <main id="main"><p class="loading">読み込み中…</p></main>
+    <aside id="side"></aside>
+  </div>
+</div>
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="cols">
+      <div><h4>学習する</h4><ul><li><a href="#drill">演習問題</a></li><li><a href="#mock">模試</a></li><li><a href="#text">テキスト（全10章）</a></li><li><a href="#record">学習記録</a></li></ul></div>
+      <div><h4>試験について</h4><ul><li>約145問・多肢選択式</li><li>オンライン100分（1問約40秒）／会場120分</li><li>合格目安 70%（非公表）</li><li><a href="https://www.jdla.org/certificate/general/" target="_blank" rel="noopener">JDLA 公式サイト</a></li></ul></div>
+      <div><h4>このサイトについて</h4><ul><li>個人の学習用に作成したサイトです。</li><li>解答記録はこのブラウザにだけ保存されます。</li><li><a href="../">用語集ツール（単語帳・クイズ）</a></li><li><button class="link" data-act="theme">表示: ライト／ダーク切替</button></li></ul></div>
+    </div>
+    <div class="copy"><span>G検定 合格ノート</span><span id="built"></span></div>
+  </div>
+</footer>
+<script src="vendor/marked.min.js"></script>
+<script>
+/* ---------- データ ---------- */
+let META, PROBLEMS, TEXT, CHAPTERS, BASIC, MOCK={};
+const esc=s=>String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const inl=s=>marked.parseInline(String(s??""));
+const chName=no=>{const c=CHAPTERS.find(c=>c.no===no);return c?`${c.no} ${c.name}`:no};
+
+/* ---------- 記録 ---------- */
+const KEY="gk-site";
+const store={ load(){ try{ return JSON.parse(localStorage.getItem(KEY)||"{}") }catch(e){ return {} } },
+  save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)) }catch(e){} } };
+let S=store.load(); S.hist=S.hist||{}; S.mocks=S.mocks||[]; S.log=S.log||[];
+const today=()=>new Date().toISOString().slice(0,10);
+
+function stats(){ // 基本問題のみ・直近の解答で集計
+  const out={}; for(const c of CHAPTERS) out[c.no]={ok:0,un:0,ng:0,n:0,total:0};
+  for(const q of BASIC){ out[q.ch].total++; const h=S.hist[q.id]; if(h){ out[q.ch][h.r]++; out[q.ch].n++ } }
+  return out;
+}
+const pct=s=> s&&s.n? Math.round((s.ok+s.un)/s.n*100):null;
+
+/* ---------- ルーティング ---------- */
+const NAV=[["home","ホーム"],["drill","演習"],["mock","模試"],["text","テキスト"],["record","記録"]];
+const SECTION_OF={home:"home",drill:"drill",q:"drill",summary:"drill",mock:"mock",mockrun:"mock",mockresult:"mock",text:"text",read:"text",record:"record"};
+let route={v:"home"}, drill=null, mock=null, timerId=null, toastId=null;
+function go(v,arg){ location.hash = arg!==undefined? `${v}/${arg}` : v; }
+function parseHash(){ const [v,arg]=location.hash.replace(/^#/,"").split("/"); return {v:V[v]?v:"home",arg} }
+window.addEventListener("hashchange",()=>{ route=parseHash(); if(timerId&&!["q","mockrun"].includes(route.v)){clearInterval(timerId);timerId=null} window.scrollTo(0,0); render() });
+function toast(msg){ let t=document.querySelector(".toast"); if(!t){t=document.createElement("div");t.className="toast";document.body.appendChild(t)} t.textContent=msg; clearTimeout(toastId); toastId=setTimeout(()=>t.remove(),2400) }
+function crumbs(list){ document.getElementById("crumbs").innerHTML=[["ホーム","home"],...list].map(([t,g],i,a)=>`<li>${i<a.length-1&&g?`<a href="#${g}">${esc(t)}</a>`:esc(t)}</li>`).join("") }
+
+function sidebar(){
+  const st=stats();
+  return `<section><h3>章別の得点率</h3><ul>${CHAPTERS.map(c=>{const s=st[c.no],p=pct(s);
+    return `<li><a href="#drill/${c.no}">${c.no}　${c.name}</a><span class="p ${p!==null&&p<70?"red":""}">${p===null?"未着手":p+"%"}</span><span class="bar ${p!==null&&p<70?"red":""}"><i style="width:${p||0}%"></i></span></li>`}).join("")}</ul>
+  <p class="small muted" style="margin:8px 0 0">基本問題の直近の解答で集計。70% 未満は赤字。</p></section>
+  <section><h3>試験情報</h3><div class="exambox"><dl><dt>次回</dt><dd>2026-11-06〜07（オンライン）</dd><dt>問題数</dt><dd>約145問</dd><dt>時間</dt><dd>100分（1問約40秒）</dd><dt>合格目安</dt><dd>70%</dd><dt>受験料</dt><dd>一般 13,200円</dd></dl></div></section>
+  <section><h3>重点分野</h3><ul>${CHAPTERS.filter(c=>c.key).map(c=>`<li><a href="#read/${c.no}">${c.no}　${c.name}</a><span class="p">${st[c.no].total}問</span></li>`).join("")}</ul></section>`;
+}
+
+/* ---------- ページ ---------- */
+const V={};
+V.home=()=>{ crumbs([]);
+  const st=stats(); const weak=CHAPTERS.filter(c=>pct(st[c.no])!==null&&pct(st[c.no])<70); const untouched=CHAPTERS.filter(c=>pct(st[c.no])===null);
+  const review=BASIC.filter(q=>S.hist[q.id]&&S.hist[q.id].r!=="ok").length;
+  const done=Object.keys(S.hist).length;
+  const lead= done===0? `まだ解答記録がありません。テキストで章の全体像をつかんだら、<a href="#drill">演習</a>から 10 問ずつ解いてください。重点分野の <a href="#drill/04">04</a>・<a href="#drill/05">05</a>・<a href="#drill/06">06</a>・<a href="#drill/09">09</a>・<a href="#drill/10">10</a> が出題の中心です。`
+    : `基本問題 ${BASIC.length} 問のうち <b>${done} 問</b>を解答済み。得点率 70% 未満の章が <b>${weak.length} 章</b>、解き直し待ちの問題が <b>${review} 問</b>あります。${weak.length?`まず <a href="#read/${weak[0].no}">${chName(weak[0].no)}</a> のテキストを読み直し、<a href="#drill/${weak[0].no}">10 問</a>解いてください。`:untouched.length?`次は未着手の <a href="#drill/${untouched[0].no}">${chName(untouched[0].no)}</a> に進んでください。`:"全章 70% 以上です。模試で仕上げてください。"}`;
+  return `
+  <h2>今日の学習</h2>
+  <p class="lead">${lead}</p>
+  <div class="actions"><button class="primary" data-act="start" data-mode="weak">苦手な章から10問</button><button data-act="start" data-mode="review" ${review?"":"disabled"}>解き直し（${review}問）</button><a class="btn" href="#text">テキストを読む</a></div>
+  <h2>章別の状況</h2>
+  <div class="tbl"><table>
+   <tr><th>章</th><th>分野</th><th class="n">解答済</th><th class="n">得点率</th><th>到達</th><th></th></tr>
+   ${CHAPTERS.map(c=>{const s=st[c.no],p=pct(s);
+     return `<tr><td class="n">${c.no}</td><td>${c.name}${c.key?' <span class="small muted">（重点）</span>':""}</td><td class="n">${s.n} / ${s.total}</td>
+     <td class="n ${p!==null&&p<70?"red":""}">${p===null?"—":p+"%"}</td><td>${p===null?"":p>=70?"○":"×"}</td>
+     <td><a href="#drill/${c.no}">演習</a> ／ <a href="#read/${c.no}">テキスト</a></td></tr>`}).join("")}
+  </table></div>
+  <p class="small muted">得点率は各問題の直近の解答で集計。「自信なしで正解」は正解に数えますが解き直しの対象です。</p>
+  <h2>学習の進め方</h2>
+  <ol class="steps">
+   <li><span><b>テキストで全体像をつかむ</b><br><span class="small muted">どんな用語が出るかを把握する。完璧に覚えようとしない。まず <a href="#read/00">00 全体マップ</a> から。</span></span></li>
+   <li><span><b>問題集を解き、3つに分けて記録する</b><br><span class="small muted">正解／正解したが自信なし／不正解。誤りの選択肢がなぜ誤りかも考える。</span></span></li>
+   <li><span><b>70% 未満の章だけ復習する</b><br><span class="small muted">丸暗記ではなく、なぜその手法が生まれたかまで理解する。</span></span></li>
+   <li><span><b>解き直して 70% を超えたら次の章へ</b><br><span class="small muted">2〜3周回し、最後に<a href="#mock">模試</a>で仕上げる。</span></span></li>
+  </ol>
+  <h2>収録内容</h2>
+  <ul><li>テキスト ${META.counts.text} 章（全体マップ＋10章）</li><li>基本問題 ${META.counts.basic} 問（章別）</li><li>模試 2 回（各 145 問・100 分）</li></ul>`;
+};
+
+V.drill=()=>{ crumbs([["演習"]]);
+  const st=stats(); const review=BASIC.filter(q=>S.hist[q.id]&&S.hist[q.id].r!=="ok").length;
+  if(route.arg){ startDrill("ch",route.arg); return "" }
+  return `
+  <h2>演習</h2>
+  <p>4択・1問約40秒。選択肢を選んで「確定」か「自信なしで確定」を押すと、4つの選択肢すべての解説が表示されます。1回 10 問で区切ります。</p>
+  <h3>出題のしかた</h3>
+  <ul>
+   <li><a href="#q" data-act="start" data-mode="weak">苦手な章から 10 問</a> — 得点率 70% 未満の章（なければ未着手の章）から出題</li>
+   <li>${review?`<a href="#q" data-act="start" data-mode="review">自信なし・不正解を解き直す（${review}問）</a>`:`<span class="muted">自信なし・不正解を解き直す（0問）</span>`}</li>
+   <li><a href="#q" data-act="start" data-mode="all">全章からランダムに 10 問</a></li>
+  </ul>
+  <h3>章を選んで解く</h3>
+  <p class="small muted">未解答の問題から順に 10 問出します。全問解答済みの章は、不正解・自信なしの問題を優先します。</p>
+  <div class="tbl"><table>
+   <tr><th>章</th><th>分野</th><th class="n">解答済</th><th class="n">得点率</th></tr>
+   ${CHAPTERS.map(c=>{const s=st[c.no],p=pct(s);return `<tr><td class="n">${c.no}</td><td><a href="#drill/${c.no}">${c.name}</a>${c.key?' <span class="small muted">（重点）</span>':""}</td><td class="n">${s.n} / ${s.total}</td><td class="n ${p!==null&&p<70?"red":""}">${p===null?"—":p+"%"}</td></tr>`}).join("")}
+  </table></div>`;
+};
+
+function pickChapter(ch,n){
+  const qs=BASIC.filter(q=>q.ch===ch);
+  const rank=q=>{const h=S.hist[q.id]; return !h?0 : h.r==="ng"?1 : h.r==="un"?2 : 3};
+  return qs.map(q=>[rank(q),Math.random(),q]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]).slice(0,n).map(x=>x[2]).sort((a,b)=>a.id<b.id?-1:1);
+}
+function startDrill(mode,ch){
+  const st=stats(); let qs=[];
+  if(mode==="ch"){ qs=pickChapter(ch,10) }
+  else if(mode==="review"){ qs=BASIC.filter(q=>S.hist[q.id]&&S.hist[q.id].r!=="ok").sort(()=>Math.random()-.5).slice(0,10) }
+  else if(mode==="all"){ qs=BASIC.slice().sort(()=>Math.random()-.5).slice(0,10) }
+  else { // weak
+    let cands=CHAPTERS.filter(c=>pct(st[c.no])!==null&&pct(st[c.no])<70).map(c=>c.no);
+    if(!cands.length) cands=CHAPTERS.filter(c=>pct(st[c.no])===null).map(c=>c.no);
+    if(!cands.length) cands=CHAPTERS.map(c=>c.no);
+    const per=Math.ceil(10/cands.length);
+    cands.forEach(no=>qs.push(...pickChapter(no,per))); qs=qs.slice(0,10);
+  }
+  if(!qs.length){ toast("出題できる問題がありません"); return }
+  drill={qs,i:0,picked:null,result:null,res:[],t0:Date.now(),sec:0,mode,ch};
+  if(location.hash==="#q"){ route={v:"q"}; render() } else go("q");
+}
+V.q=()=>{
+  const d=drill; if(!d){ go("drill"); return "" }
+  const q=d.qs[d.i]; crumbs([["演習","drill"],[chName(q.ch),`drill/${q.ch}`],[`問題 ${d.i+1}／${d.qs.length}`]]);
+  if(!d.result&&!timerId){ d.t0=Date.now(); timerId=setInterval(()=>{d.sec=Math.floor((Date.now()-d.t0)/1000); const el=document.getElementById("timer"); if(el){el.textContent=d.sec+" 秒"; el.classList.toggle("over",d.sec>40)}},500) }
+  const g=!!d.result;
+  return `
+  <h2><span class="ch">第${+q.ch}章</span>問題 ${d.i+1} <span class="small muted" style="font-weight:400;font-family:var(--sans)">／ ${d.qs.length}問</span></h2>
+  <p class="qmeta"><span>ID: ${q.id}</span><span>難易度: ${esc(q.lv)}</span><span>形式: ${esc(q.type)}</span><span>経過 <span class="timer ${d.sec>40?"over":""}" id="timer">${d.sec} 秒</span></span></p>
+  <div class="qtext">${marked.parse(q.q)}</div>
+  <form id="qform" onsubmit="return false">
+  <ul class="choices">${q.c.map((c,i)=>{
+    let cls="",mark="";
+    if(g){ if(i===q.ans){cls="ok";mark="○"} else {mark="×"; if(i===d.picked) cls="ng"} }
+    return `<li class="${cls}"><label>${g?`<span class="mark">${mark}</span>`:`<input type="radio" name="c" id="c${i}" value="${i}" ${d.picked===i?"checked":""}>`}<span class="k">${"ABCD"[i]}</span><span class="x">${inl(c)}${g?`<span class="why">${inl(q.why[i])}</span>`:""}</span></label></li>`}).join("")}</ul>
+  ${g?`
+   <p class="verdict ${d.result==="ng"?"ng":"ok"}">${d.result==="ng"?"不正解":d.result==="un"?"正解（自信なし）":"正解"}<span class="small muted" style="font-weight:400;margin-left:10px;font-family:var(--sans)">${d.sec}秒${d.sec>40?"・目安の40秒を超えました":""}</span></p>
+   ${q.bg?`<div class="well"><b>背景:</b> ${inl(q.bg)}</div>`:""}
+   <p class="small">関連用語: ${q.terms.map(t=>esc(t)).join("、")||"—"}　／　<a href="#read/${q.ch}">テキスト ${chName(q.ch)}</a></p>
+   <div class="actions"><button class="primary" data-act="next">${d.i+1<d.qs.length?"次の問題へ":"結果を見る"}</button><a class="btn" href="#drill">中断する</a></div>`
+  :`<div class="actions"><button class="primary" data-act="grade" data-c="ok" ${d.picked===null?"disabled":""}>確定</button><button data-act="grade" data-c="un" ${d.picked===null?"disabled":""}>自信なしで確定</button></div>
+    <p class="small muted">「自信なしで確定」は、正解でも解き直しの対象として記録されます。</p>`}
+  </form>`;
+};
+V.summary=()=>{ if(!drill){ go("drill"); return "" } crumbs([["演習","drill"],["結果"]]);
+  const r=drill.res,n={ok:0,un:0,ng:0}; r.forEach(x=>n[x]++); const p=Math.round((n.ok+n.un)/r.length*100);
+  const chs=[...new Set(drill.qs.map(q=>q.ch))]; const st=stats();
+  return `
+  <h2>結果</h2>
+  <div class="bigrate"><b class="${p<70?"red":""}">${p}<span style="font-size:22px">%</span></b><span>${r.length}問　正解 ${n.ok}・自信なし ${n.un}・不正解 ${n.ng}</span></div>
+  <div class="tbl"><table style="max-width:640px"><tr><th>問題</th><th>章</th><th>結果</th><th class="n">時間</th></tr>
+   ${drill.qs.map((q,i)=>`<tr><td>${q.id}</td><td>${chName(q.ch)}</td><td style="color:var(--${drill.res[i]==="un"?"unsure":drill.res[i]});font-weight:700">${{ok:"正解",un:"正解（自信なし）",ng:"不正解"}[drill.res[i]]}</td><td class="n">${S.hist[q.id]?.t??"—"} 秒</td></tr>`).join("")}</table></div>
+  <h3>章の得点率（累計）</h3>
+  <ul>${chs.map(ch=>{const cp=pct(st[ch]);return `<li>${chName(ch)}: <b class="${cp<70?"red":""}">${cp}%</b>（${st[ch].n}／${st[ch].total}問解答済）${cp>=70?" — 70% 到達":` — <a href="#read/${ch}">テキストを読み直す</a>`}</li>`}).join("")}</ul>
+  <div class="actions"><button class="primary" data-act="start" data-mode="${n.un+n.ng?"review":drill.mode}" data-ch="${drill.ch||""}">${n.un+n.ng?"あやふやな問題を解き直す":"続けて10問"}</button>${drill.ch?`<a class="btn" href="#drill/${drill.ch}">同じ章をもう10問</a>`:""}<a class="btn" href="#record">記録を見る</a></div>`;
+};
+
+/* ---------- 模試 ---------- */
+V.mock=()=>{ crumbs([["模試"]]);
+  if(route.arg&&MOCK[route.arg]){ startMock(route.arg); return "" }
+  return `
+  <h2>模試</h2>
+  <p>本番と同じ 145 問・100 分。解説は終了後にまとめて表示します。途中で飛ばした問題には、下の問題番号から戻れます。Step 4 の最後まで解かずに残しておくのが推奨です。</p>
+  <div class="tbl"><table style="max-width:640px"><tr><th>模試</th><th class="n">問題数</th><th>これまでの結果</th><th></th></tr>
+  ${["mock1","mock2"].map((k,i)=>{const past=S.mocks.filter(m=>m.id===k);
+   return `<tr><td>模試${i+1}</td><td class="n">${MOCK[k].length}</td><td>${past.length?past.map(m=>`${m.date} ${m.pct}%`).join("<br>"):'<span class="muted">未受験</span>'}</td><td><a href="#mock/${k}">開始する</a></td></tr>`}).join("")}
+  </table></div>
+  <h3>章ごとの出題数</h3>
+  <p class="small">01 8問／02 8問／03 12問／04 18問／05 20問／06 20問／07 10問／08 9問／09 20問／10 20問（重点分野を多めに配分）</p>`;
+};
+function startMock(id){ mock={id,qs:MOCK[id],i:0,picked:{},t0:Date.now(),limit:100*60,done:false}; if(location.hash==="#mockrun"){route={v:"mockrun"};render()} else go("mockrun") }
+V.mockrun=()=>{ const m=mock; if(!m){ go("mock"); return "" } const q=m.qs[m.i]; crumbs([["模試","mock"],[`模試${m.id.slice(-1)}`],[`問 ${m.i+1}／${m.qs.length}`]]);
+  if(!timerId){ timerId=setInterval(()=>{const left=m.limit-Math.floor((Date.now()-m.t0)/1000); const el=document.getElementById("mtimer"); if(el){el.textContent=fmt(Math.max(0,left)); el.classList.toggle("over",left<600)} if(left<=0){finishMock()}},1000) }
+  const answered=Object.keys(m.picked).length;
+  return `
+  <div class="mockbar"><span>模試${m.id.slice(-1)}　解答 ${answered}／${m.qs.length}</span><span>残り <span class="timer" id="mtimer">${fmt(m.limit-Math.floor((Date.now()-m.t0)/1000))}</span></span><button data-act="mfinish">終了して採点</button></div>
+  <h2><span class="ch">第${+q.ch}章</span>問 ${m.i+1}</h2>
+  <p class="qmeta"><span>ID: ${q.id}</span><span>難易度: ${esc(q.lv)}</span></p>
+  <div class="qtext">${marked.parse(q.q)}</div>
+  <form onsubmit="return false"><ul class="choices">${q.c.map((c,i)=>`<li><label><input type="radio" name="c" id="c${i}" value="${i}" ${m.picked[q.id]===i?"checked":""}><span class="k">${"ABCD"[i]}</span><span class="x">${inl(c)}</span></label></li>`).join("")}</ul></form>
+  <div class="actions"><button data-act="mprev" ${m.i===0?"disabled":""}>前の問題</button><button class="primary" data-act="mnext" ${m.i+1>=m.qs.length?"disabled":""}>次の問題</button></div>
+  <div class="mocknav">${m.qs.map((x,i)=>`<button data-act="mjump" data-i="${i}" class="${i===m.i?"cur":""} ${m.picked[x.id]!==undefined?"done":""}" title="${x.id}">${i+1}</button>`).join("")}</div>`;
+};
+const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+function finishMock(){ const m=mock; if(!m||m.done) return; m.done=true; clearInterval(timerId); timerId=null;
+  const res={}; let ok=0; m.qs.forEach(q=>{ const r=m.picked[q.id]===undefined?"skip":m.picked[q.id]===q.ans?"ok":"ng"; res[q.id]=r; if(r==="ok") ok++ });
+  const rec={id:m.id,date:today(),sec:Math.floor((Date.now()-m.t0)/1000),res,pct:Math.round(ok/m.qs.length*100)};
+  S.mocks.push(rec); store.save(); mock.rec=rec; go("mockresult");
+}
+V.mockresult=()=>{ const m=mock; if(!m||!m.rec){ go("mock"); return "" } const r=m.rec; crumbs([["模試","mock"],[`模試${m.id.slice(-1)} 結果`]]);
+  const by={}; CHAPTERS.forEach(c=>by[c.no]={ok:0,ng:0,skip:0,n:0}); m.qs.forEach(q=>{by[q.ch][r.res[q.id]]++; by[q.ch].n++});
+  return `
+  <h2>模試${m.id.slice(-1)} の結果</h2>
+  <div class="bigrate"><b class="${r.pct<70?"red":""}">${r.pct}<span style="font-size:22px">%</span></b><span>${m.qs.length}問　所要 ${fmt(r.sec)}　${r.pct>=70?"合格目安に到達":"合格目安 70% まであと "+(Math.ceil(m.qs.length*.7)-Math.round(r.pct*m.qs.length/100))+" 問"}</span></div>
+  <div class="tbl"><table><tr><th>章</th><th>分野</th><th class="n">出題</th><th class="n">正解</th><th class="n">不正解</th><th class="n">未解答</th><th class="n">正答率</th></tr>
+  ${CHAPTERS.map(c=>{const b=by[c.no],p=Math.round(b.ok/b.n*100);return `<tr><td class="n">${c.no}</td><td>${c.name}</td><td class="n">${b.n}</td><td class="n">${b.ok}</td><td class="n">${b.ng}</td><td class="n">${b.skip}</td><td class="n ${p<70?"red":""}"><b>${p}%</b></td></tr>`}).join("")}
+  </table></div>
+  <p class="small muted">模試の結果は章別得点率（基本問題）には含めず、別に記録します。正答率 70% 未満の章はテキストを読み直してください。</p>
+  <h2>解説</h2>
+  ${m.qs.map((q,i)=>{const rr=r.res[q.id];return `<details class="exp"><summary>問 ${i+1}（${q.id}）${rr==="ok"?"○":rr==="ng"?"×":"未解答"}　${esc(q.q.replace(/\*\*/g,"").split("\n")[0]).slice(0,60)}…</summary>
+    <div class="qtext" style="margin-top:8px">${marked.parse(q.q)}</div>
+    <ul class="choices">${q.c.map((c,j)=>`<li class="${j===q.ans?"ok":m.picked[q.id]===j?"ng":""}"><label><span class="mark">${j===q.ans?"○":"×"}</span><span class="k">${"ABCD"[j]}</span><span class="x">${inl(c)}<span class="why">${inl(q.why[j])}</span></span></label></li>`).join("")}</ul>
+    ${q.bg?`<div class="well"><b>背景:</b> ${inl(q.bg)}</div>`:""}<p class="small"><a href="#read/${q.ch}">テキスト ${chName(q.ch)}</a></p></details>`}).join("")}
+  <div class="actions"><a class="btn" href="#mock">模試一覧へ</a><a class="btn" href="#record">記録を見る</a></div>`;
+};
+
+/* ---------- テキスト ---------- */
+V.text=()=>{ crumbs([["テキスト"]]);
+  return `<h2>テキスト</h2><p>各章は「この章で押さえること」「全体像」「トピック解説」「章末まとめ」の順に構成しています。1章あたり15〜30分で読める量が目安です。最初に <a href="#read/00">00 全体マップ</a> を読んでください。</p>
+  <div class="tbl"><table><tr><th>章</th><th>分野</th><th class="n">節</th><th class="n">文字数</th><th></th></tr>
+  ${TEXT.map(t=>{const c=CHAPTERS.find(c=>c.no===t.no);return `<tr><td class="n">${t.no}</td><td><a href="#read/${t.no}">${esc(t.title)}</a>${c&&c.key?' <span class="small muted">（重点）</span>':""}</td><td class="n">${t.sections.length}</td><td class="n">${t.chars.toLocaleString()}</td><td>${t.no!=="00"?`<a href="#drill/${t.no}">演習</a>`:""}</td></tr>`}).join("")}</table></div>`;
+};
+V.read=()=>{ const t=TEXT.find(x=>x.no===route.arg)||TEXT[0]; const idx=TEXT.indexOf(t); const prev=TEXT[idx-1],next=TEXT[idx+1];
+  crumbs([["テキスト","text"],[`${t.no} ${t.title}`]]);
+  return `<h2><span class="ch">${t.no==="00"?"全体マップ":"第"+(+t.no)+"章"}</span>${esc(t.title)}</h2>${t.lead?`<p class="small muted">${inl(t.lead)}</p>`:""}
+  <ul class="toc">${t.sections.map((s,i)=>`<li><a href="#read/${t.no}" data-sec="${i}">${esc(s.title)}</a></li>`).join("")}</ul>
+  <article class="prose">${t.sections.map((s,i)=>`<h2 id="sec${i}">${esc(s.title)}</h2>${marked.parse(s.md)}`).join("")}</article>
+  <div class="chapnav"><span>${prev?`<a href="#read/${prev.no}">← ${prev.no} ${esc(prev.title)}</a>`:""}</span><span>${t.no!=="00"?`<a class="btn" href="#drill/${t.no}">この章の問題を解く</a>`:""}</span><span>${next?`<a href="#read/${next.no}">${next.no} ${esc(next.title)} →</a>`:""}</span></div>`;
+};
+
+/* ---------- 記録 ---------- */
+V.record=()=>{ crumbs([["記録"]]);
+  const st=stats(); const rows=CHAPTERS.filter(c=>st[c.no].n);
+  const tot={ok:0,un:0,ng:0}; rows.forEach(c=>{const s=st[c.no];tot.ok+=s.ok;tot.un+=s.un;tot.ng+=s.ng});
+  return `
+  <h2>記録</h2>
+  <p>基本問題 解答済 <b>${tot.ok+tot.un+tot.ng}／${BASIC.length}問</b>（正解 ${tot.ok}・自信なし ${tot.un}・不正解 ${tot.ng}）。70% 到達は <b>${rows.filter(c=>pct(st[c.no])>=70).length}／10章</b>。</p>
+  <div class="tbl"><table>
+   <tr><th>章</th><th>分野</th><th class="n">解答済</th><th class="n">正解</th><th class="n">自信なし</th><th class="n">不正解</th><th class="n">得点率</th><th>内訳</th><th>70%</th></tr>
+   ${CHAPTERS.map(c=>{const s=st[c.no],p=pct(s);
+    return `<tr><td class="n">${c.no}</td><td>${c.name}</td><td class="n">${s.n} / ${s.total}</td><td class="n">${s.ok}</td><td class="n">${s.un}</td><td class="n">${s.ng}</td><td class="n ${p!==null&&p<70?"red":""}"><b>${p===null?"—":p+"%"}</b></td>
+    <td>${s.n?`<span class="stack"><i style="width:${s.ok/s.n*100}%;background:var(--ok)"></i><i style="width:${s.un/s.n*100}%;background:var(--unsure)"></i><i style="width:${s.ng/s.n*100}%;background:var(--ng)"></i></span>`:""}</td><td>${p===null?"":p>=70?"○":"×"}</td></tr>`}).join("")}
+  </table></div>
+  <p class="small muted">内訳: 緑＝正解、黄＝自信なし、赤＝不正解。各問題の直近の解答で集計。</p>
+  <h3>次に復習する章（70% 未満）</h3>
+  <ul>${rows.filter(c=>pct(st[c.no])<70).map(c=>`<li><a href="#read/${c.no}">${c.no} ${c.name}</a> — ${pct(st[c.no])}%。テキストを読み直してから <a href="#drill/${c.no}">10問解く</a></li>`).join("")||'<li class="muted">70% 未満の章はありません</li>'}</ul>
+  <h3>模試</h3>
+  ${S.mocks.length?`<div class="tbl"><table style="max-width:520px"><tr><th>模試</th><th>日付</th><th class="n">所要</th><th class="n">正答率</th></tr>${S.mocks.map(m=>`<tr><td>模試${m.id.slice(-1)}</td><td>${m.date}</td><td class="n">${fmt(m.sec)}</td><td class="n ${m.pct<70?"red":""}"><b>${m.pct}%</b></td></tr>`).join("")}</table></div>`:'<p class="muted">未受験</p>'}
+  <h3>記録の書き出し・読み込み</h3>
+  <p class="small">書き出した JSON を Claude に渡すと <code>problems/得点記録.md</code> に反映できます。別のブラウザで続ける場合は、書き出したファイルを読み込んでください。</p>
+  <div class="actions"><button data-act="export">記録を書き出す（JSON）</button><label class="btn">読み込む <input type="file" id="imp" accept="application/json" hidden></label><button data-act="reset">記録をすべて消す</button></div>
+  <div id="resetbox" hidden class="well">本当にすべての記録を消しますか？ <button data-act="reset2" class="primary" style="margin-left:8px">消す</button></div>`;
+};
+
+/* ---------- 描画とイベント ---------- */
+function render(){
+  const sec=SECTION_OF[route.v];
+  document.getElementById("nav").innerHTML=NAV.map(([k,l])=>`<li><a href="#${k}" ${sec===k?'aria-current="page"':''}>${l}</a></li>`).join("");
+  const html=V[route.v](); if(html==="") return;
+  document.getElementById("main").innerHTML=html;
+  document.getElementById("side").innerHTML=sidebar();
+  document.querySelectorAll('input[name="c"]').forEach(r=>r.addEventListener("change",()=>{
+    if(route.v==="q"){ drill.picked=+r.value; document.querySelectorAll('[data-act="grade"]').forEach(b=>b.disabled=false) }
+    if(route.v==="mockrun"){ mock.picked[mock.qs[mock.i].id]=+r.value; document.querySelectorAll('.mocknav button')[mock.i].classList.add("done"); document.querySelector(".mockbar span").textContent=`模試${mock.id.slice(-1)}　解答 ${Object.keys(mock.picked).length}／${mock.qs.length}` }
+  }));
+  document.querySelectorAll('[data-sec]').forEach(a=>a.addEventListener("click",e=>{e.preventDefault(); document.getElementById("sec"+a.dataset.sec)?.scrollIntoView({behavior:"smooth"})}));
+  const imp=document.getElementById("imp"); if(imp) imp.addEventListener("change",e=>{const f=e.target.files[0]; if(!f) return; f.text().then(t=>{const j=JSON.parse(t); if(!j.hist) throw 0; S.hist={...S.hist,...j.hist}; S.mocks=[...S.mocks,...(j.mocks||[])]; store.save(); toast("記録を読み込みました"); render()}).catch(()=>toast("読み込めませんでした。書き出した JSON を選んでください"))});
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"); if(!b||b.disabled) return;
+  if(b.tagName==="A") e.preventDefault();
+  const a=b.dataset.act, d=drill;
+  if(a==="theme"){ const r=document.documentElement; const dark=r.dataset.theme==="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme: dark)").matches); r.dataset.theme=dark?"light":"dark"; try{localStorage.setItem("gk-theme",r.dataset.theme)}catch(x){} }
+  if(a==="start") startDrill(b.dataset.mode,b.dataset.ch||undefined);
+  if(a==="grade"){ clearInterval(timerId); timerId=null; const q=d.qs[d.i]; const ok=d.picked===q.ans; d.result=!ok?"ng":b.dataset.c==="un"?"un":"ok"; d.res.push(d.result); S.hist[q.id]={r:d.result,t:d.sec,d:today()}; store.save(); render(); window.scrollTo({top:document.querySelector(".verdict").offsetTop-80,behavior:"smooth"}) }
+  if(a==="next"){ d.i++; d.picked=null; d.result=null; d.sec=0; if(d.i>=d.qs.length) go("summary"); else { window.scrollTo(0,0); render() } }
+  if(a==="mprev"){ mock.i--; render() }
+  if(a==="mnext"){ mock.i++; render() }
+  if(a==="mjump"){ mock.i=+b.dataset.i; render() }
+  if(a==="mfinish"){ finishMock() }
+  if(a==="export"){ const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),hist:S.hist,mocks:S.mocks},null,1)],{type:"application/json"}); const u=URL.createObjectURL(blob); const l=document.createElement("a"); l.href=u; l.download=`g-kentei-record-${today()}.json`; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(u),1000) }
+  if(a==="reset"){ document.getElementById("resetbox").hidden=false }
+  if(a==="reset2"){ S={hist:{},mocks:[],log:[]}; store.save(); toast("記録を消しました"); render() }
+});
+window.addEventListener("beforeunload",e=>{ if(mock&&!mock.done&&route.v==="mockrun"){ e.preventDefault(); e.returnValue="" } });
+
+/* ---------- 起動 ---------- */
+(async()=>{
+  try{ const th=localStorage.getItem("gk-theme"); if(th) document.documentElement.dataset.theme=th }catch(e){}
+  const dd=Math.ceil((new Date("2026-11-06T00:00:00+09:00")-new Date())/864e5); document.getElementById("days").textContent=dd>0?dd:"—";
+  try{
+    [META,PROBLEMS,TEXT]=await Promise.all(["data/meta.json","data/problems.json","data/text.json"].map(u=>fetch(u).then(r=>{if(!r.ok) throw new Error(u); return r.json()})));
+  }catch(err){ document.getElementById("main").innerHTML=`<h2>データを読み込めませんでした</h2><p>${esc(err.message)} が開けません。<code>python3 scripts/build_data.py</code> を実行して <code>app/data/</code> を生成し、Web サーバー経由（GitHub Pages か <code>python3 -m http.server</code>）で開いてください。</p>`; return }
+  CHAPTERS=META.chapters; BASIC=PROBLEMS.filter(p=>p.src==="basic"); MOCK.mock1=PROBLEMS.filter(p=>p.src==="mock1"); MOCK.mock2=PROBLEMS.filter(p=>p.src==="mock2");
+  document.getElementById("built").textContent=`最終更新 ${META.built}`;
+  route=parseHash(); render();
+})();
+</script>
+</body>
+</html>

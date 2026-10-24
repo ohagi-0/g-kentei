@@ -1,8 +1,19 @@
 # 公開するファイルだけを許可する（ホワイトリスト方式）
+# 字幕原文・用語集CSV/MD・チケット・CLAUDE.md は公開しない
 *
 !.gitignore
+!.nojekyll
 !index.html
 !G検定単語帳.html
 !G検定用語クイズ.html
 !G検定用語集_初学者向け.md
-!.nojekyll
+# 学習サイト（app/）とその生成元
+!app/
+!app/**
+app/mockup*.html
+!scripts/
+!scripts/build_data.py
+!text/
+!text/*.md
+!problems/
+!problems/*.md
