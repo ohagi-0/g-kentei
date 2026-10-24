@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G検定 学習ツール</title>
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1b2430;--sub:#5b6878;--line:#dde3ea;--acc:#2563eb;--acc2:#7c3aed}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f141a;--card:#1a2129;--ink:#e8edf2;--sub:#9aa7b5;--line:#2b3542;--acc:#60a5fa;--acc2:#a78bfa}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.7}
+main{max-width:720px;margin:0 auto;padding:40px 16px}
+h1{font-size:26px;margin:0 0 6px}
+p.lead{color:var(--sub);margin:0 0 28px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;text-decoration:none;color:inherit;box-shadow:0 4px 18px rgba(0,0,0,.05);border-top:4px solid var(--acc)}
+a.card.quiz{border-top-color:var(--acc2)}
+a.card h2{margin:0 0 6px;font-size:20px}
+a.card p{margin:0;color:var(--sub);font-size:14px}
+a.card:hover{border-color:var(--acc)}
+.note{margin-top:28px;font-size:13px;color:var(--sub)}
+.note a{color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<h1>G検定 学習ツール</h1>
+<p class="lead">用語解説動画をもとにした525語の用語集で学習できます。学習記録はこのブラウザ内に保存されます。</p>
+<div class="grid">
+<a class="card" href="G検定単語帳.html"><h2>📇 単語帳</h2><p>カードをめくって覚える形式。「覚えた」「まだ」で判定し、1日→3日→7日後に復習対象になります。章別・苦手だけ・逆引きにも対応。</p></a>
+<a class="card quiz" href="G検定用語クイズ.html"><h2>✅ 4択クイズ</h2><p>意味から用語、または用語から意味を選ぶクイズ。似た用語が選択肢に混ざるので区別の練習になります。苦手な用語だけの出題も可能。</p></a>
+</div>
+<p class="note">用語集本体: <a href="G検定用語集_初学者向け.md">G検定用語集_初学者向け.md</a>（初学者向けに専門用語へ括弧で意味を添えたもの）<br>
+出典: 【G検定 聞き流し】用語解説 総まとめ ~2026年試験対応~（ワイズデータ） <a href="https://youtu.be/iNMZtrpTXpM" target="_blank" rel="noopener">YouTube</a></p>
+</main>
+</body>
+</html>

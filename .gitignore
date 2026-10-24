@@ -1,0 +1,8 @@
+# 公開するファイルだけを許可する（ホワイトリスト方式）
+*
+!.gitignore
+!index.html
+!G検定単語帳.html
+!G検定用語クイズ.html
+!G検定用語集_初学者向け.md
+!.nojekyll
